@@ -22,9 +22,10 @@ module.exports = async function (context, myTimer) {
     var i;
     for(i = 0; i < messageCount; i++)
     {
-        var message = new Message(JSON.stringify({           
+        var message = new Message(JSON.stringify({
+            timestamp: new Date().getTime(),        
             gwy:"b121IoTWorx",
-            name:"Device_1210304_AV_10" + i,
+            name:"Device_1210101_AV_" + i,
             value: 10 + (Math.random() * 20),
             tag: "DEGREES-FAHRENHEIT"
           }));
