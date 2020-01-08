@@ -20,25 +20,32 @@ module.exports = async function (context, myTimer) {
     var client = DeviceClient.fromConnectionString(connectionString, Mqtt);
 
     var i;
+    var now = new Date;
     for(i = 0; i < messageCount; i++)
     {
-        var message = new Message(JSON.stringify({
-            timestamp: new Date().getTime(),        
+        var body = {
+            timestamp: now.toLocaleString('en-US'),           
             gwy:"b121IoTWorx",
-            name:"Device_1210101_AV_" + i,
+            name:"Device_1210101_AV_10" + i,
             value: 10 + (Math.random() * 20),
             tag: "DEGREES-FAHRENHEIT"
-          }));
+          };
+        
+        var messageBody = JSON.stringify(Object.assign({}, body));
+        var messageBytes = Buffer.from(messageBody, "utf-8");
 
-        message.properties.add('encoder', 'b121encoder');
-        message.properties.add('deviceId', 'IoTWorXb121gwySim');
+        var message = new Message(messageBytes);        
+        message.contentType = 'application/json';
+        message.contentEncoding = 'utf-8';
+
+        context.log(message);
     
         // Send the message.
         client.sendEvent(message, function (err) {
             if (err) {
             console.error('send error: ' + err.toString());
             } else {
-            console.log('message sent');
+            console.log('message sent' + message);
             }
         });
     }
