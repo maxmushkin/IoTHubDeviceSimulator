@@ -9,5 +9,9 @@
     "azure-iot-device": "^1.7.1",
     "azure-iot-device-mqtt": "^1.7.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/maxmushkin/IoTHubDeviceSimulator.git"
+  }
 }
