@@ -24,17 +24,19 @@ module.exports = async function (context, myTimer) {
     for(i = 0; i < messageCount; i++)
     {
         var body = {
-            timestamp: now.toLocaleString('en-US'),           
-            gwy:"b121IoTWorx",
-            name:"Device_1210101_AV_10" + i,
-            value: 10 + (Math.random() * 20),
-            tag: "DEGREES-FAHRENHEIT"
+            id:"Device" + i,           
+            m:"Occupant_temperature",
+            v: 60 + (Math.random() * 20),
+            q: true,
+            t: now.toLocaleString('en-US')
           };
-        
+                
         var messageBody = JSON.stringify(Object.assign({}, body));
         var messageBytes = Buffer.from(messageBody, "utf-8");
 
         var message = new Message(messageBytes);        
+        
+        // Define this properties is required for proper message decoding to automatic IoTHub routing to the blob storage, otherwise message body is BASE64 encoded
         message.contentType = 'application/json';
         message.contentEncoding = 'utf-8';
 
