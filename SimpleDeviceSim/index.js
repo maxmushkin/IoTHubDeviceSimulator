@@ -15,7 +15,7 @@ module.exports = async function (context, myTimer) {
     if(!connectionString || 0 === connectionString.length){
         context.log("IoT Device Connection String is not configured!");
         return;
-    }   
+    }
     
     var client = DeviceClient.fromConnectionString(connectionString, Mqtt);
 
@@ -24,7 +24,7 @@ module.exports = async function (context, myTimer) {
     for(i = 0; i < messageCount; i++)
     {
         var body = {
-            id:"Device" + i,           
+            id:"Device" + i,
             m:"Occupant_temperature",
             v: 60 + (Math.random() * 20),
             q: true,
@@ -34,13 +34,13 @@ module.exports = async function (context, myTimer) {
         var messageBody = JSON.stringify(Object.assign({}, body));
         var messageBytes = Buffer.from(messageBody, "utf-8");
 
-        var message = new Message(messageBytes);        
+        var message = new Message(messageBytes);
         
         // Define this properties is required for proper message decoding to automatic IoTHub routing to the blob storage, otherwise message body is BASE64 encoded
         message.contentType = 'application/json';
         message.contentEncoding = 'utf-8';
 
-        context.log(message);
+        context.log(messageBody);
     
         // Send the message.
         client.sendEvent(message, function (err) {
