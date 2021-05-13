@@ -19,35 +19,54 @@ module.exports = async function (context, myTimer) {
     
     var client = DeviceClient.fromConnectionString(connectionString, Mqtt);
 
-    var i;
+    var i, j;
     var now = new Date;
+    let tags = [{tag: 'Humidity', value: 60.0},
+                {tag: "LIGHT_LEVEL", value: 2},
+                {tag: "MOTION_SENSOR", value: false},
+                {tag: "OCCUPANT_TEMPERATURE", value: 17.0},
+                {tag: "SOUND_LEVEL", value: 29}];
+
     for(i = 0; i < messageCount; i++)
     {
-        var body = {
-            timestamp: now.toLocaleString('en-US'),           
-            gwy:"b121IoTWorx",
-            name:"Device_1210101_AV_10" + i,
-            value: 10 + (Math.random() * 20),
-            tag: "DEGREES-FAHRENHEIT"
-          };
-        
-        var messageBody = JSON.stringify(Object.assign({}, body));
-        var messageBytes = Buffer.from(messageBody, "utf-8");
-
-        var message = new Message(messageBytes);        
-        message.contentType = 'application/json';
-        message.contentEncoding = 'utf-8';
-
-        context.log(message);
-    
-        // Send the message.
-        client.sendEvent(message, function (err) {
-            if (err) {
-            console.error('send error: ' + err.toString());
-            } else {
-            console.log('message sent' + message);
+        let ct = now.toLocaleString('en-US');
+        for(j = 0; j < tags.length; j++)
+        {
+            let value = 0;
+            if(typeof tags[j].value === "boolean"){
+                value = now.getHours() > 8 ? 1 : 0;
             }
-        });
+            if(typeof tags[j].value === "number"){
+                value = tags[j].value % 1 === 0 
+                ? tags[j].value + Math.random() * 100
+                : tags[j].value + Math.random()
+            }
+
+            var body = {
+                t: ct,
+                id: tags[j].tag,
+                v: value,
+                s: "15s"
+            };
+            
+            var messageBody = JSON.stringify(Object.assign({}, body));
+            var messageBytes = Buffer.from(messageBody, "utf-8");
+
+            var message = new Message(messageBytes);        
+            message.contentType = 'application/json';
+            message.contentEncoding = 'utf-8';
+
+            context.log(messageBody);
+        
+            // Send the message.
+            client.sendEvent(message, function (err) {
+                if (err) {
+                console.error('send error: ' + err.toString());
+                } else {
+                console.log('message sent' + message);
+                }
+            });
+        }
     }
 
     context.log('Device Simulator message sending is completed!', timeStamp);
