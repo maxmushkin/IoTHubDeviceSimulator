@@ -38,8 +38,9 @@ module.exports = async function (context, myTimer) {
             }
             if(typeof tags[j].value === "number"){
                 value = tags[j].value % 1 === 0 
-                ? tags[j].value + Math.random() * 100
-                : tags[j].value + Math.random()
+                ? tags[j].value + Math.random() * 10
+                : tags[j].value + Math.random();
+                value = value.toFixed(2);
             }
 
             var body = {
